@@ -1,16 +1,15 @@
 mod image;
 mod vector;
+mod ray;
+mod scene;
 use image::Image;
+use vector::Vec3;
+use lazy_static::lazy_static;
+
+use crate::scene::Scene;
 
 fn main() {
-    let mut img = Image::new(256, 256);
-    for j in 0..img.height {
-        for i in 0..img.width {
-            let pixel = &mut img.pixels[j*img.height + i];
-            pixel.red = i as f32 / (img.width - 1) as f32;
-            pixel.green = j as f32 / (img.height - 1) as f32;
-            pixel.blue = 0.0;
-        }
-    }
+    let scene = Scene::new(16.0/9.0, 400, 2.0, Vec3::zero(), 1.0);
+    let img = scene.render();
     println!("{}", img.to_ppm());
 }
