@@ -1,9 +1,27 @@
+use std::ops;
+
 // Represents a simple RGB color
 #[derive(Debug, Clone, Copy)]
 pub struct Color {
-    pub red: f32,
-    pub green: f32,
-    pub blue: f32,
+    pub red: f64,
+    pub green: f64,
+    pub blue: f64,
+}
+
+impl ops::Mul<f64> for Color {
+    type Output = Color;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Color{ red: self.red * rhs, green: self.green * rhs, blue: self.blue * rhs }
+    }
+}
+
+impl ops::Add for Color {
+    type Output = Color;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Color{ red: self.red + rhs.red, green: self.green + rhs.green, blue: self.blue + rhs.blue }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -39,18 +57,12 @@ impl Image {
 
     // Converts the pixels to ppm format
     pub fn to_ppm(&self) -> String {
-        format!("P3\n{} {}\n255\n", self.width, self.height)
-            + &self
-                .pixels
-                .chunks(self.height)
-                .into_iter()
-                .map(|row| {
-                    row.iter()
-                        .map(|color| color.to_ppm())
-                        .reduce(|acc, e| acc + &e)
-                        .unwrap()
-                })
-                .reduce(|acc, e| acc + &e)
-                .unwrap()
+        let mut out = format!("P3\n{} {}\n255\n", self.width, self.height);
+        for j in 0..self.height {
+            for i in 0..self.width {
+                out += &self.pixels[j*self.height + i].to_ppm();
+            }
+        }
+        out
     }
 }
