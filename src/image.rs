@@ -60,7 +60,9 @@ impl Image {
         let mut out = format!("P3\n{} {}\n255\n", self.width, self.height);
         for j in 0..self.height {
             for i in 0..self.width {
-                out += &self.pixels[j*self.height + i].to_ppm();
+                // IDK WHY
+                let coordinate = if i < self.height {j*self.height + i} else {self.width-(i-self.height) + j*self.height};
+                out += &self.pixels[coordinate].to_ppm();
             }
         }
         out

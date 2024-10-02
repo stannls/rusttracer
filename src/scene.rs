@@ -1,4 +1,4 @@
-use crate::{image::{Color, Image}, ray::Ray, vector::Vec3};
+use crate::{geometry::Sphere, image::{Color, Image}, ray::Ray, vector::Vec3};
 
 pub struct Scene {
     aspect_ratio: f64,
@@ -23,11 +23,13 @@ impl Scene {
         let viewport_horizontal = Vec3::new(self.viewport_width, 0.0, 0.0);
         let viewport_vertical = Vec3::new(0.0, -self.viewport_height, 0.0);
 
-        let horizontal_delta = viewport_horizontal / self.image_width as f64;
-        let vertical_delta = viewport_vertical / self.image_height as f64;
+        let horizontal_delta = (viewport_horizontal / self.image_width as f64);
+        let vertical_delta = (viewport_vertical / self.image_height as f64);
 
         let viewport_upper_left = self.camera_position - Vec3::new(0.0, 0.0, self.focal_length) - viewport_horizontal/2.0 - viewport_vertical/2.0;
         let pixel00_loc = viewport_upper_left + (horizontal_delta + vertical_delta) * 0.5;
+
+        let sphere = Sphere{ center: Vec3::new(0.0, 0.0, -1.0), radius: 0.5 };
 
         for j in 0..self.image_height {
             for i in 0..self.image_width {
@@ -35,8 +37,11 @@ impl Scene {
                 let ray_direction = pixel_center - self.camera_position;
                 let ray = Ray::new(self.camera_position, ray_direction);
 
-                let color = ray_color(ray);
-                img.pixels[j * self.image_height + i] = color;
+                let color = sphere_color(ray, sphere);
+                
+                // IDK WHY
+                let coordinate = if i < self.image_height {j*self.image_height + i} else {self.image_width-(i-self.image_height) + j*self.image_height};
+                img.pixels[coordinate] = color;
             }
         }
 
@@ -47,4 +52,13 @@ impl Scene {
 fn ray_color(ray: Ray) -> Color {
     let a = 0.5*(ray.direction().y() + 1.0);
     Color { red: 1.0, green: 1.0, blue: 1.0 } * (1.0 - a) + Color { red: 0.5, green: 0.7, blue: 1.0 } * a
+}
+
+fn sphere_color(ray: Ray, sphere: Sphere) -> Color {
+    if sphere.collides(ray) {
+        Color{ red: 1.0, green: 0.0, blue: 0.0 }
+    } else {
+        let a = 0.5*(ray.direction().unit_vector().y() + 1.0);
+        Color { red: 1.0, green: 1.0, blue: 1.0 } * (1.0 - a) + Color { red: 0.5, green: 0.7, blue: 1.0 } * a
+    }
 }

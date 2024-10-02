@@ -33,7 +33,7 @@ impl Vec3 {
     }
 
     pub fn unit_vector(&self) -> Vec3 {
-        *self / self.length()
+        Vec3::new(self[0] / self.length(), self[1] / self.length(), self[2] / self.length())
     }
 
     pub fn dot(v1: Vec3, v2: Vec3) -> f64 {
@@ -127,6 +127,6 @@ impl ops::Div<f64> for Vec3 {
     type Output = Vec3;
 
     fn div(self, rhs: f64) -> Self::Output {
-        self * (1.0/rhs)
+        Vec3::new(self[0]/rhs, self[1]/rhs, self[2]/rhs)
     }
 }
