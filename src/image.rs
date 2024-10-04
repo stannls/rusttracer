@@ -58,12 +58,8 @@ impl Image {
     // Converts the pixels to ppm format
     pub fn to_ppm(&self) -> String {
         let mut out = format!("P3\n{} {}\n255\n", self.width, self.height);
-        for j in 0..self.height {
-            for i in 0..self.width {
-                // IDK WHY
-                let coordinate = if i < self.height {j*self.height + i} else {self.width-(i-self.height) + j*self.height};
-                out += &self.pixels[coordinate].to_ppm();
-            }
+        for i in 0..self.pixels.len() {
+            out += &self.pixels[i].to_ppm();
         }
         out
     }

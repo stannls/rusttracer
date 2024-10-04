@@ -3,9 +3,7 @@ mod vector;
 mod ray;
 mod scene;
 mod geometry;
-use image::Image;
 use vector::Vec3;
-use lazy_static::lazy_static;
 
 use crate::scene::Scene;
 

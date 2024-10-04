@@ -1,4 +1,4 @@
-use std::{f64, ops::{self, DivAssign}};
+use std::ops;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Vec3([f64; 3]);
@@ -107,11 +107,25 @@ impl ops::MulAssign<f64> for Vec3 {
     }
 }
 
+impl ops::MulAssign<isize> for Vec3 {
+    fn mul_assign(&mut self, rhs: isize) {
+        *self *= rhs as f64;
+    }
+}
+
 impl ops::Mul<f64> for Vec3 {
     type Output = Vec3;
 
     fn mul(self, rhs: f64) -> Self::Output {
         Vec3::new(self[0] * rhs, self[1] * rhs, self[2] * rhs)
+    }
+}
+
+impl ops::Mul<isize> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: isize) -> Self::Output {
+        self * rhs as f64
     }
 }
 
@@ -123,10 +137,24 @@ impl ops::DivAssign<f64> for Vec3 {
     }
 }
 
+impl ops::DivAssign<isize> for Vec3 {
+    fn div_assign(&mut self, rhs: isize) {
+        *self /= rhs as f64;
+    }
+}
+
 impl ops::Div<f64> for Vec3 {
     type Output = Vec3;
 
     fn div(self, rhs: f64) -> Self::Output {
         Vec3::new(self[0]/rhs, self[1]/rhs, self[2]/rhs)
+    }
+}
+
+impl ops::Div<isize> for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: isize) -> Self::Output {
+        self / rhs as f64
     }
 }

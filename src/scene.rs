@@ -23,14 +23,15 @@ impl Scene {
         let viewport_horizontal = Vec3::new(self.viewport_width, 0.0, 0.0);
         let viewport_vertical = Vec3::new(0.0, -self.viewport_height, 0.0);
 
-        let horizontal_delta = (viewport_horizontal / self.image_width as f64);
-        let vertical_delta = (viewport_vertical / self.image_height as f64);
+        let horizontal_delta = viewport_horizontal / self.image_width as f64;
+        let vertical_delta = viewport_vertical / self.image_height as f64;
 
-        let viewport_upper_left = self.camera_position - Vec3::new(0.0, 0.0, self.focal_length) - viewport_horizontal/2.0 - viewport_vertical/2.0;
+        let viewport_upper_left = self.camera_position - Vec3::new(0.0, 0.0, self.focal_length) - viewport_horizontal/2 - viewport_vertical/2;
         let pixel00_loc = viewport_upper_left + (horizontal_delta + vertical_delta) * 0.5;
 
         let sphere = Sphere{ center: Vec3::new(0.0, 0.0, -1.0), radius: 0.5 };
 
+        let mut c = 0;
         for j in 0..self.image_height {
             for i in 0..self.image_width {
                 let pixel_center = pixel00_loc + (horizontal_delta * i as f64) + (vertical_delta * j as f64);
@@ -38,10 +39,8 @@ impl Scene {
                 let ray = Ray::new(self.camera_position, ray_direction);
 
                 let color = sphere_color(ray, sphere);
-                
-                // IDK WHY
-                let coordinate = if i < self.image_height {j*self.image_height + i} else {self.image_width-(i-self.image_height) + j*self.image_height};
-                img.pixels[coordinate] = color;
+                img.pixels[c] = color;
+                c+=1;
             }
         }
 
