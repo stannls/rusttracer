@@ -3,6 +3,7 @@ mod vector;
 mod ray;
 mod scene;
 mod geometry;
+mod util;
 use vector::Vec3;
 
 use crate::{geometry::{HittableList, Sphere}, scene::Scene};
