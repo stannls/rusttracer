@@ -23,7 +23,7 @@ impl Ray {
         self.origin + self.direction * t
     }
 
-    pub fn color(&self, hittable: &Box<dyn Hittable>) -> Color {
+    pub fn color(&self, hittable: &dyn Hittable) -> Color {
         let hit_record = hittable.hit(self, Interval::new(0.0, f64::MAX));
         if hit_record.is_some() {
             let normal = hit_record.unwrap().normal;
