@@ -1,5 +1,7 @@
 use std::ops;
 
+use crate::util::Interval;
+
 // Represents a simple RGB color
 #[derive(Debug, Clone, Copy)]
 pub struct Color {
@@ -24,6 +26,14 @@ impl ops::Add for Color {
     }
 }
 
+impl ops::AddAssign for Color {
+    fn add_assign(&mut self, rhs: Self) {
+        self.red = self.red + rhs.red;
+        self.green = self.green + rhs.green;
+        self.blue = self.blue + rhs.blue;
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Image {
     pub width: usize,
@@ -33,7 +43,12 @@ pub struct Image {
 
 impl Color {
     pub fn to_ppm(&self) -> String {
-        format!("{} {} {}\n", (255.999 * self.red) as usize, (255.999 * self.green) as usize, (255.999 * self.blue) as usize)
+        let intensity = Interval::new(0.0, 0.999);
+        let rbyte = (256.0 * intensity.clamp(self.red)) as usize;
+        let gbyte = (256.0 * intensity.clamp(self.green)) as usize;
+        let bbyte = (256.0 * intensity.clamp(self.blue)) as usize;
+
+        format!("{} {} {}\n", rbyte, gbyte, bbyte)
     }
 }
 
