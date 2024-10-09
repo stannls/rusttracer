@@ -3,7 +3,9 @@ use crate::{geometry::{Hittable, HittableList}, image::{Color, Image}, ray::Ray,
 #[derive(Debug, Clone, Copy)]
 pub struct Camera {
     pub position: Vec3,
-    pub focal_length: f64
+    pub focal_length: f64,
+    pub samples_per_pixel: usize,
+    pub max_depth: usize,
 }
 
 pub struct Scene {
@@ -19,7 +21,7 @@ impl Scene {
         Scene { aspect_ratio, viewport_height, viewport_width: viewport_height * aspect_ratio, camera, world: Box::new(world)}
     }
 
-    pub fn render(&self, image_width: usize, samples_per_pixel: usize) -> Image {
+    pub fn render(&self, image_width: usize) -> Image {
         let image_height = (image_width as f64 / self.aspect_ratio) as usize;
         let mut img = Image::new(image_width, image_height);
 
@@ -27,11 +29,11 @@ impl Scene {
         for j in 0..image_height {
             for i in 0..image_width {
                 let mut pixel_color = Color{ red: 0.0, green: 0.0, blue: 0.0 };
-                for _sample in 0..samples_per_pixel {
+                for _sample in 0..self.camera.samples_per_pixel {
                     let r = self.get_ray(i, j, image_width, image_height);
-                    pixel_color += r.color(self.world.as_ref());
+                    pixel_color += r.color(self.world.as_ref(), self.camera.max_depth);
                 }
-                img.pixels[c] = pixel_color * (1.0 / samples_per_pixel as f64);
+                img.pixels[c] = pixel_color * (1.0 / self.camera.samples_per_pixel as f64);
                 c+=1;
             }
         }

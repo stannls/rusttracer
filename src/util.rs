@@ -49,3 +49,12 @@ pub fn random_double() -> f64 {
 pub fn random_between(min: f64, max: f64) -> f64 {
     min + (max - min)*random_double()
 }
+
+#[inline(always)]
+pub fn linear_to_gamma(linear_component: f64) -> f64 {
+    if linear_component > 0.0 {
+        f64::sqrt(linear_component)
+    } else {
+        0.0
+    }
+}

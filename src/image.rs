@@ -1,6 +1,6 @@
 use std::ops;
 
-use crate::util::Interval;
+use crate::util::{Interval, linear_to_gamma};
 
 // Represents a simple RGB color
 #[derive(Debug, Clone, Copy)]
@@ -44,9 +44,9 @@ pub struct Image {
 impl Color {
     pub fn to_ppm(&self) -> String {
         let intensity = Interval::new(0.0, 0.999);
-        let rbyte = (256.0 * intensity.clamp(self.red)) as usize;
-        let gbyte = (256.0 * intensity.clamp(self.green)) as usize;
-        let bbyte = (256.0 * intensity.clamp(self.blue)) as usize;
+        let rbyte = (256.0 * intensity.clamp(linear_to_gamma(self.red))) as usize;
+        let gbyte = (256.0 * intensity.clamp(linear_to_gamma(self.green))) as usize;
+        let bbyte = (256.0 * intensity.clamp(linear_to_gamma(self.blue))) as usize;
 
         format!("{} {} {}\n", rbyte, gbyte, bbyte)
     }
