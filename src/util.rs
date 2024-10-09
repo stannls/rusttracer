@@ -1,3 +1,5 @@
+use rand::prelude::*;
+
 #[derive(Debug, Clone, Copy)]
 pub struct Interval {
     pub min: f64,
@@ -34,4 +36,16 @@ impl Interval {
             val
         }
     }
+}
+
+// Yields a random double in [0, 1)
+#[inline(always)]
+pub fn random_double() -> f64 {
+    rand::thread_rng().gen_range(0.0..1.0)
+}
+
+// Yields a random double between [min, max)
+#[inline(always)]
+pub fn random_between(min: f64, max: f64) -> f64 {
+    min + (max - min)*random_double()
 }

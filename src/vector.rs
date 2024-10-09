@@ -1,11 +1,40 @@
 use std::ops;
 
+use crate::util::{random_between, random_double};
+
 #[derive(Clone, Copy, Debug)]
 pub struct Vec3([f64; 3]);
 
 impl Vec3 {
     pub fn new(e1: f64, e2: f64, e3: f64) -> Vec3 {
         Vec3([e1, e2, e3])
+    }
+
+    pub fn random() -> Vec3 {
+        Vec3([random_double(), random_double(), random_double()])
+    }
+
+    pub fn random_between(min: f64, max: f64) -> Vec3 {
+        Vec3([random_between(min, max), random_between(min, max), random_between(min, max)])
+    }
+
+    pub fn random_unit_vector() -> Vec3 {
+        loop {
+            let p = Vec3::random_between(-1.0, 1.0);
+            let lensq = p.length_squared();
+            if 1e-160 < lensq && lensq <= 1.0 {
+                return p.unit_vector();
+            }
+        }
+    }
+
+    pub fn random_on_hemisphere(normal: &Vec3) -> Vec3 {
+        let unit = Self::random_unit_vector();
+        if Self::dot(unit, *normal) > 0.0 {
+            unit
+        } else {
+            -unit
+        }
     }
 
     pub fn zero() -> Vec3 {

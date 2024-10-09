@@ -1,5 +1,4 @@
-use crate::{geometry::{Hittable, HittableList}, image::{Color, Image}, ray::Ray, vector::Vec3};
-use rand::prelude::*;
+use crate::{geometry::{Hittable, HittableList}, image::{Color, Image}, ray::Ray, util::random_double, vector::Vec3};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Camera {
@@ -30,7 +29,7 @@ impl Scene {
                 let mut pixel_color = Color{ red: 0.0, green: 0.0, blue: 0.0 };
                 for _sample in 0..samples_per_pixel {
                     let r = self.get_ray(i, j, image_width, image_height);
-                    pixel_color += r.color(&self.world);
+                    pixel_color += r.color(self.world.as_ref());
                 }
                 img.pixels[c] = pixel_color * (1.0 / samples_per_pixel as f64);
                 c+=1;
@@ -65,8 +64,7 @@ impl Scene {
     }
 
     fn sample_square() -> Vec3 {
-        let mut rng = rand::thread_rng();
-        Vec3::new(rng.gen_range(0.0..1.0) - 0.5, rng.gen_range(0.0..1.0) - 0.5, 0.0)
+        Vec3::new(random_double() - 0.5, random_double() - 0.5, 0.0)
     }
 }
 
